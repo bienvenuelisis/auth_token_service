@@ -10,10 +10,10 @@ class JwtClaims {
     required this.ipAddress,
     required this.tenant,
     required this.imageUrl,
-    required this.tin,
     required this.exp,
     required this.iss,
     required this.aud,
+    required this.rawJson,
   });
 
   factory JwtClaims.fromJson(Map<String, dynamic> json) {
@@ -38,10 +38,10 @@ class JwtClaims {
       ipAddress: json['ipAddress'] as String,
       tenant: json['tenant'] as String,
       imageUrl: json['image_url'] as String,
-      tin: json['tin'] as String,
       exp: json['exp'] as int,
       iss: json['iss'] as String,
       aud: json['aud'] as String,
+      rawJson: json,
     );
   }
 
@@ -58,7 +58,10 @@ class JwtClaims {
   final String? nameIdentifier;
   final String? surname;
   final String? tenant;
-  final String tin;
+  final Map<String, dynamic> rawJson;
+
+  /// Get tin from raw JSON
+  String? getField(String field) => rawJson[field] as String?;
 
   /// Get expiry date from timestamp
   DateTime get expiryDate => DateTime.fromMillisecondsSinceEpoch(exp * 1000);
@@ -71,24 +74,6 @@ class JwtClaims {
       expiryDate.isBefore(DateTime.now().add(const Duration(minutes: 30)));
 
   Map<String, dynamic> toJson() {
-    return {
-      'jti': jti,
-      'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier':
-          nameIdentifier,
-      'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress':
-          emailAddress,
-      'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name': name,
-      'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/mobilephone':
-          mobilePhone,
-      'fullName': fullName,
-      'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname': surname,
-      'ipAddress': ipAddress,
-      'tenant': tenant,
-      'image_url': imageUrl,
-      'tin': tin,
-      'exp': exp,
-      'iss': iss,
-      'aud': aud,
-    };
+    return rawJson;
   }
 }
