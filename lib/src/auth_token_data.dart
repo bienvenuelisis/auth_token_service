@@ -41,7 +41,7 @@ final class AuthTokenData {
   String? get userFullName => claims?.fullName;
 
   /// Get user TIN from JWT claims
-  String? get userTin => claims?.tin;
+  String? get userTin => claims?.getField('tin');
 
   /// Get user mobile phone from JWT claims
   String? get userMobilePhone => claims?.mobilePhone;
