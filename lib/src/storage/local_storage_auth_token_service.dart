@@ -10,18 +10,20 @@ export '../i_auth_token_service.dart';
 const String _authTokenKey = 'auth_token';
 
 class LocalStorageAuthTokenService implements IAuthTokenService {
-  LocalStorageAuthTokenService(this._localStorage);
+  LocalStorageAuthTokenService(this._localStorage, [this.authTokenKey]);
 
   final LocalStorage _localStorage;
 
+  final String? authTokenKey;
+
   @override
   Future<void> clearAuthToken() async {
-    await _localStorage.remove(_authTokenKey);
+    await _localStorage.remove(authTokenKey ?? _authTokenKey);
   }
 
   @override
   Future<AuthTokenData?> getAuthToken() async {
-    final tokenString = await _localStorage.getString(_authTokenKey);
+    final tokenString = await _localStorage.getString(authTokenKey ?? _authTokenKey);
 
     if (tokenString == null) {
       return null;
@@ -35,7 +37,7 @@ class LocalStorageAuthTokenService implements IAuthTokenService {
   @override
   Future<void> setAuthToken(AuthTokenData tokenData) async {
     await _localStorage.setString(
-      _authTokenKey,
+      authTokenKey ?? _authTokenKey,
       jsonEncode(tokenData.toJson()),
     );
   }
